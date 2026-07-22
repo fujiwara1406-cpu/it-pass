@@ -1,0 +1,10 @@
+# 機密情報
+.env
+app/js/config.js
+
+# OS / エディタ
+.DS_Store
+.vscode/
+
+# 誤ってできた空の入れ子リポジトリ
+it-pass/

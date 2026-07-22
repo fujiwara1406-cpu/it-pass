@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1d4ed8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>ITパスポート 一問一答</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <h1>ITパスポート 一問一答</h1>
+    <p>ITパスポートの勉強用に、自分で問題を登録して解けるクイズアプリ</p>
+  </header>
+
+  <main class="container">
+    <div id="setup-help" class="setup-help hidden">
+      <h2>データベースに接続できません</h2>
+      <ol>
+        <li>Supabase → <strong>SQL Editor</strong> で <code>data/supabase_fix.sql</code> を実行</li>
+        <li>Supabase → <strong>Settings → API Keys</strong> を開く</li>
+        <li><strong>Legacy anon</strong> タブの <code>anon</code> キー（<code>eyJ...</code>）をコピー</li>
+        <li><code>app/js/config.js</code> の <code>SUPABASE_ANON_KEY</code> に貼り替え</li>
+        <li>ブラウザを再読み込み</li>
+      </ol>
+      <p class="setup-note">Publishable キー（<code>sb_publishable_...</code>）だけでは動かない場合があります。</p>
+    </div>
+
+    <p id="status-message" class="status-message" aria-live="polite"></p>
+
+    <nav class="tabs">
+      <button type="button" class="tab active" id="tab-register" data-tab="register">登録</button>
+      <button type="button" class="tab" id="tab-quiz" data-tab="quiz">クイズ</button>
+    </nav>
+
+    <section id="register-section" class="panel active">
+      <h2 id="form-title">問題を登録</h2>
+
+      <form id="register-form" class="form">
+        <input type="hidden" id="edit-id" value="">
+
+        <label for="body">問題文</label>
+        <textarea id="body" name="body" rows="3" required></textarea>
+
+        <div class="choices-grid">
+          <div>
+            <label for="choice-a">選択肢 A</label>
+            <input type="text" id="choice-a" name="choice_a" required>
+          </div>
+          <div>
+            <label for="choice-b">選択肢 B</label>
+            <input type="text" id="choice-b" name="choice_b" required>
+          </div>
+          <div>
+            <label for="choice-c">選択肢 C</label>
+            <input type="text" id="choice-c" name="choice_c" required>
+          </div>
+          <div>
+            <label for="choice-d">選択肢 D</label>
+            <input type="text" id="choice-d" name="choice_d" required>
+          </div>
+        </div>
+
+        <fieldset class="correct-fieldset">
+          <legend>正解</legend>
+          <div class="radio-group">
+            <label><input type="radio" name="correct" value="A" required> A</label>
+            <label><input type="radio" name="correct" value="B"> B</label>
+            <label><input type="radio" name="correct" value="C"> C</label>
+            <label><input type="radio" name="correct" value="D"> D</label>
+          </div>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="register-btn">登録する</button>
+          <button type="button" class="btn btn-secondary hidden" id="cancel-edit-btn">編集をやめる</button>
+        </div>
+      </form>
+
+      <div class="list-header">
+        <h3>登録済みの問題</h3>
+        <p id="question-count" class="question-count">0 問</p>
+      </div>
+      <ul id="question-list" class="question-list"></ul>
+      <p id="empty-list" class="empty-text">まだ問題がありません。上のフォームから登録してください。</p>
+    </section>
+
+    <section id="quiz-section" class="panel">
+      <h2>クイズ</h2>
+
+      <div id="quiz-card" class="quiz-card hidden">
+        <p id="quiz-progress" class="quiz-progress">全 0 問から出題</p>
+
+        <div class="control-hint" aria-label="操作ヒント">
+          <p class="control-hint-title">キー / スワイプで回答</p>
+          <div class="control-hint-grid">
+            <span><kbd>W</kbd> / ↑ <strong>A</strong></span>
+            <span><kbd>A</kbd> / ← <strong>B</strong></span>
+            <span><kbd>S</kbd> / ↓ <strong>C</strong></span>
+            <span><kbd>D</kbd> / → <strong>D</strong></span>
+          </div>
+        </div>
+
+        <p class="quiz-label">問題</p>
+        <p id="quiz-body" class="quiz-body"></p>
+
+        <div id="quiz-choices" class="quiz-choices">
+          <button type="button" class="btn choice-btn" id="choice-btn-a" data-choice="A" data-key="W" data-swipe="up">A</button>
+          <button type="button" class="btn choice-btn" id="choice-btn-b" data-choice="B" data-key="A" data-swipe="left">B</button>
+          <button type="button" class="btn choice-btn" id="choice-btn-c" data-choice="C" data-key="S" data-swipe="down">C</button>
+          <button type="button" class="btn choice-btn" id="choice-btn-d" data-choice="D" data-key="D" data-swipe="right">D</button>
+        </div>
+
+        <p id="swipe-feedback" class="swipe-feedback" aria-live="polite"></p>
+
+        <p id="quiz-result" class="quiz-result"></p>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn btn-secondary hidden" id="next-btn">次の問題へ</button>
+          <button type="button" class="btn btn-secondary" id="reset-score-btn">スコアをリセット</button>
+        </div>
+      </div>
+
+      <p id="quiz-empty" class="empty-text">クイズを始めるには、まず問題を登録してください。</p>
+
+      <div class="score-panel">
+        <p id="score" class="score">スコア: 0 / 0</p>
+        <p id="accuracy" class="accuracy">正答率: -</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.9/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
