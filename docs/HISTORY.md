@@ -4,6 +4,28 @@ ITパスポート 一問一答クイズの判断・作業・変更を時系列�
 
 ---
 
+## 2026-07-27（公開完了：GitHub Pages + ローカル保存）
+
+- Supabase プロジェクト不通（NXDOMAIN）のため、localStorage フォールバックを追加
+- サンプル5問を初回自動投入
+- GitHub Pages で `app/` を公開
+- 公開URL: https://fujiwara1406-cpu.github.io/it-pass/
+
+---
+
+## 2026-07-27（コア＋AI 完成モード着手）
+
+- AI生成タブ追加（プロンプトコピー / JSON一括登録 / 自動生成ボタン）
+- `netlify.toml` と `netlify/functions/generate-questions.js` を追加
+- `scripts/generate_questions.py` / `scripts/prepare_drop.sh` を追加
+- `data/ai_questions_sample.json` を追加
+- Publishable キー利用時の警告を画面に表示
+- TASK / APP_SPEC / DEPLOY / README を完成モードに更新
+- Drop 用 zip: `scripts/prepare_drop.sh` → `dist/app-drop.zip`
+- 残（手元）: Legacy anon キー差し替え、Netlify 本番公開、`OPENAI_API_KEY`、公開URL記入
+
+---
+
 ## 2026-07-22（`.cursor` の見本を追加）
 
 - `.cursor/skills/demo-yougo-memo/` … 「用語メモして」で LEARNING に1行足す見本スキル

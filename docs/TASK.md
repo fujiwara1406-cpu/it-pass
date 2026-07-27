@@ -1,57 +1,59 @@
-# 今やること（1タスクだけ）
+# 今やること（完成モード：今日・明日）
 
-> 学習の地図: `docs/STUDY_PLAN.md`  
-> **いまの範囲（第1周）:** Cursor → Git → HTML → 公開  
-> この週は HTML 以外の技術の話はしない（鉄則は STUDY_PLAN）
-
----
-
-## 現在: 第1周 — HTML を公開する
-
-### TASK-L1: HTML の1枚を用意する
-
-- Cursor に「公開用のシンプルな HTML を1枚作って」と頼む
-- タイトル・見出し・短い文章があれば十分
-- ブラウザで開いて中身を確認する
-
-**状態:** ⬜ 未着手
+> **ゴール:** コア（CRUD＋クイズ）＋ AI生成 が動く公開URL  
+> 仕様: `docs/APP_SPEC.md`
 
 ---
 
-### TASK-L2: Git でセーブする
+## 今日（Day 1）
 
-- 変更をコミットする（Cursor に「コミットして」で可）
-- 「公開前のセーブ」だと分かる一言を残す
+### TASK-D1a: Supabase 接続を直す
 
-**状態:** ⬜ 未着手（L1のあと）
+1. Supabase → Settings → API Keys → **Legacy anon**（`eyJ...`）をコピー
+2. `app/js/config.js` の `SUPABASE_ANON_KEY` を差し替え（Git に上げない）
+3. 必要なら SQL Editor で `data/supabase_fix.sql` を実行
+4. `cd app && python3 -m http.server 8000` → http://localhost:8000 で登録・一覧・クイズを確認
+
+**状態:** ⬜ キー差し替えは手元作業（Publishable キーのときは画面に警告が出る）
 
 ---
 
-### TASK-L3: ネットに公開する
+### TASK-D1b: AIタブ（手動ルート）
 
-1. [Netlify Drop](https://app.netlify.com/drop) に HTML（またはそのフォルダ）をドロップ
-2. 発行された URL をブラウザで開く
-3. URL を `docs/APP_SPEC.md` か README に書く
+- [x] 「AI生成」タブ追加
+- [x] プロンプトコピー
+- [x] JSON 一括登録
+
+**状態:** ✅ 実装済み
+
+---
+
+## 明日（Day 2）
+
+### TASK-D2a: 自動生成 Function
+
+- [x] `netlify.toml`
+- [x] `netlify/functions/generate-questions.js`
+- [x] フロントから呼び出し（失敗時は手動フォールバック）
+
+**状態:** ✅ 実装済み（本番では `OPENAI_API_KEY` が必要）
+
+---
+
+### TASK-D2b: 本番公開
+
+1. `scripts/prepare_drop.sh` で zip 作成済み（`dist/app-drop.zip`）
+2. [Netlify Drop](https://app.netlify.com/drop) にドロップ（フロント公開）
+3. Functions 付きはリポジトリルートを Netlify に接続 + `OPENAI_API_KEY`
+4. 公開URLを README / APP_SPEC に記入
+5. チェック: 登録・編集・削除 / クイズ / AI手動 / AI自動 / スマホスワイプ
 
 詳細: `docs/DEPLOY.md`
 
-**状態:** ⬜ 未着手（L2のあと）
+**状態:** 🟨 公開パッケージ準備済み（アカウントでのドロップ／接続は手元）
 
 ---
 
-## 第2周（公開が終わってから）
+## 第1周学習タスク（完成後に戻す場合）
 
-- データベースを学ぶ（`docs/DATABASE.md`）
-- そのあとで接続・問題データなどを扱う
-
----
-
-## メモ（あとで使う・今は触らない）
-
-以前進めていたクイズ本体・接続修正は、第1周クリア後に再開する。
-
-| ID | 内容 | メモ |
-|----|------|------|
-| TASK-09a | DB接続確認 | 第2周以降 |
-| TASK-09b | クイズアプリの本番公開 | DBのあと |
-| TASK-01〜10 | 本体実装 | 実装済み・学習順序は後回し |
+以前の HTML 公開学習用タスクは、アプリ完成後に再開してよい。

@@ -158,13 +158,39 @@ body {
 }
 
 .form input[type="text"],
-.form textarea {
+.form textarea,
+.form select,
+.ai-json {
   width: 100%;
   margin-bottom: 1rem;
   padding: 0.85rem 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 16px;
+  font-family: inherit;
+}
+
+.ai-lead {
+  margin: 0 0 1.25rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.ai-hint {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  color: #1e40af;
+  font-size: 0.9rem;
+}
+
+.ai-json {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  resize: vertical;
 }
 
 .choices-grid {
@@ -495,8 +521,8 @@ body {
   }
 
   .tab {
-    font-size: 0.95rem;
-    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.75rem 0.35rem;
   }
 
   .choices-grid {

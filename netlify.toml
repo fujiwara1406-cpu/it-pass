@@ -1,0 +1,11 @@
+[build]
+  publish = "app"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/generate-questions"
+  to = "/.netlify/functions/generate-questions"
+  status = 200

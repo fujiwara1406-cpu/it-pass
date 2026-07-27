@@ -17,6 +17,7 @@
   <main class="container">
     <div id="setup-help" class="setup-help hidden">
       <h2>データベースに接続できません</h2>
+      <p>いまはブラウザ内のローカル保存でも使えます。Supabase を使う場合のみ下を実施してください。</p>
       <ol>
         <li>Supabase → <strong>SQL Editor</strong> で <code>data/supabase_fix.sql</code> を実行</li>
         <li>Supabase → <strong>Settings → API Keys</strong> を開く</li>
@@ -31,6 +32,7 @@
 
     <nav class="tabs">
       <button type="button" class="tab active" id="tab-register" data-tab="register">登録</button>
+      <button type="button" class="tab" id="tab-ai" data-tab="ai">AI生成</button>
       <button type="button" class="tab" id="tab-quiz" data-tab="quiz">クイズ</button>
     </nav>
 
@@ -86,6 +88,40 @@
       <p id="empty-list" class="empty-text">まだ問題がありません。上のフォームから登録してください。</p>
     </section>
 
+    <section id="ai-section" class="panel">
+      <h2>AIで問題を生成</h2>
+      <p class="ai-lead">キーワードや参考文から ITパスポート風の四択問題を作り、一括登録できます。</p>
+
+      <form id="ai-form" class="form">
+        <label for="ai-keywords">キーワード（例: セキュリティ, ネットワーク）</label>
+        <input type="text" id="ai-keywords" name="keywords" placeholder="セキュリティ, クラウド" autocomplete="off">
+
+        <label for="ai-reference">参考文・過去問メモ（任意）</label>
+        <textarea id="ai-reference" name="reference" rows="3" placeholder="参考にしたい文章があれば貼ってください"></textarea>
+
+        <label for="ai-count">生成する問題数</label>
+        <select id="ai-count" name="count">
+          <option value="3">3問</option>
+          <option value="5" selected>5問</option>
+          <option value="10">10問</option>
+        </select>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="ai-generate-btn">自動生成する</button>
+          <button type="button" class="btn btn-secondary" id="ai-copy-prompt-btn">プロンプトをコピー</button>
+        </div>
+      </form>
+
+      <p class="ai-hint">自動生成が使えないときは「プロンプトをコピー」→ ChatGPT などに貼る → 返ってきた JSON を下に貼って「一括登録」。</p>
+
+      <label for="ai-json">生成結果（JSON）</label>
+      <textarea id="ai-json" class="ai-json" rows="12" placeholder='[{"body":"...","choice_a":"...","choice_b":"...","choice_c":"...","choice_d":"...","correct":"A"}]'></textarea>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" id="ai-import-btn">一括登録する</button>
+      </div>
+    </section>
+
     <section id="quiz-section" class="panel">
       <h2>クイズ</h2>
 
@@ -132,6 +168,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.9/dist/umd/supabase.min.js"></script>
+  <script src="js/config.example.js"></script>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
 </body>

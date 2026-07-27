@@ -6,5 +6,10 @@ app/js/config.js
 .DS_Store
 .vscode/
 
+# デプロイ一時物
+dist/
+node_modules/
+package-lock.json
+
 # 誤ってできた空の入れ子リポジトリ
 it-pass/
