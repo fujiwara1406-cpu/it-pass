@@ -61,6 +61,12 @@ let wrongOnly = false;
 let isQuizTabActive = true;
 let touchStartX = 0;
 let touchStartY = 0;
+let isSwipeGesture = false;
+
+function unlockSwipeScroll() {
+  isSwipeGesture = false;
+  document.body.classList.remove("is-swipe-lock");
+}
 
 function showStatus(message, type) {
   elements.statusMessage.textContent = message || "";
@@ -287,19 +293,38 @@ function onTouchStart(event) {
   if (!isQuizTabActive || !event.changedTouches[0]) {
     return;
   }
+  isSwipeGesture = false;
   touchStartX = event.changedTouches[0].clientX;
   touchStartY = event.changedTouches[0].clientY;
 }
 
+function onTouchMove(event) {
+  if (!isQuizTabActive || !event.touches[0]) {
+    return;
+  }
+  const dx = event.touches[0].clientX - touchStartX;
+  const dy = event.touches[0].clientY - touchStartY;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 8) {
+    return;
+  }
+  isSwipeGesture = true;
+  document.body.classList.add("is-swipe-lock");
+  event.preventDefault();
+}
+
 function onTouchEnd(event) {
   if (!isQuizTabActive || !event.changedTouches[0]) {
+    unlockSwipeScroll();
     return;
   }
   const dx = event.changedTouches[0].clientX - touchStartX;
   const dy = event.changedTouches[0].clientY - touchStartY;
-  if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_THRESHOLD) {
+  const shouldAnswer = isSwipeGesture && Math.max(Math.abs(dx), Math.abs(dy)) >= SWIPE_THRESHOLD;
+  unlockSwipeScroll();
+  if (!shouldAnswer) {
     return;
   }
+  event.preventDefault();
   let direction = "right";
   if (Math.abs(dy) > Math.abs(dx)) {
     direction = dy < 0 ? "up" : "down";
@@ -310,6 +335,10 @@ function onTouchEnd(event) {
   flashChoice(choice, "swipe-pressed");
   elements.swipeFeedback.textContent = `スワイプ: ${choice}`;
   answer(choice);
+}
+
+function onTouchCancel() {
+  unlockSwipeScroll();
 }
 
 function init() {
@@ -356,8 +385,11 @@ function init() {
   elements.tabWrong.addEventListener("click", () => switchTab("wrong"));
   elements.tabList.addEventListener("click", () => switchTab("list"));
   document.addEventListener("keydown", onKeyDown);
-  elements.quizCard.addEventListener("touchstart", onTouchStart, { passive: true });
-  elements.quizCard.addEventListener("touchend", onTouchEnd, { passive: true });
+  const swipeArea = elements.quizSection;
+  swipeArea.addEventListener("touchstart", onTouchStart, { passive: true });
+  swipeArea.addEventListener("touchmove", onTouchMove, { passive: false });
+  swipeArea.addEventListener("touchend", onTouchEnd, { passive: false });
+  swipeArea.addEventListener("touchcancel", onTouchCancel, { passive: true });
 }
 
 init();

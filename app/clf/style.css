@@ -6,6 +6,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
 }
 
 body {
@@ -15,6 +16,12 @@ body {
   color: #1f2937;
   line-height: 1.6;
   padding-bottom: env(safe-area-inset-bottom);
+  overscroll-behavior: none;
+}
+
+body.is-swipe-lock {
+  overflow: hidden;
+  touch-action: none;
 }
 
 .header {
@@ -109,6 +116,11 @@ body {
 
 .panel.active {
   display: block;
+}
+
+#quiz-section.panel.active {
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 .panel h2 {
@@ -226,7 +238,8 @@ body {
 
 .quiz-card {
   margin-bottom: 1rem;
-  touch-action: pan-y;
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 .control-hint {
@@ -313,6 +326,7 @@ body {
   color: #111827;
   white-space: normal;
   word-break: break-word;
+  touch-action: none;
 }
 
 .choice-btn:hover:not(:disabled) {
